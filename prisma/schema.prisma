@@ -1,0 +1,542 @@
+// schema.prisma
+// Esquema validado contra o frontend Hugo Ferreira — Gastronomia & Eventos
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USUÁRIOS E AUTENTICAÇÃO
+// ============================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      UserRole @default(USER)
+  avatar    String?
+  phone     String?
+  active    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  posts BlogPost[]
+
+  @@index([email])
+  @@index([role])
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  USER
+}
+
+// ============================================
+// SERVIÇOS
+// Mapeamento do front (ServicosPage.tsx):
+//   1. "Casamentos & Debutantes"  → tag "CERIMÔNIAS"
+//   2. "Personal Chef"            → tag "EXCLUSIVO"
+//   3. "Eventos Especiais & Corporativos" → tag "ALTO VOLUME"
+//   4. "Gestão de Cozinha"        → tag "CONSULTORIA"
+// ============================================
+
+model Servico {
+  id             String  @id @default(cuid())
+  titulo         String
+  slug           String  @unique
+  // Tag exibida no canto superior esquerdo do card (ex: "CERIMÔNIAS", "EXCLUSIVO")
+  tag            String?
+  descricao      String  @db.Text
+  descricaoCurta String? @db.Text
+  imagem         String
+  imagemAlt      String?
+  icone          String?
+  ordem          Int     @default(0)
+  destaque       Boolean @default(false)
+  ativo          Boolean @default(true)
+
+  // Detalhes do serviço
+  duracaoMinima Int?    // em minutos
+  duracaoMaxima Int?
+  pessoasMin    Int?
+  pessoasMax    Int?
+  precoBase     Decimal? @db.Decimal(10, 2)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  categoriaId String?
+  categoria   CategoriaServico? @relation(fields: [categoriaId], references: [id])
+  itens       ItemServico[]
+  orcamentos  Orcamento[]
+  tags        ServicoTag[]
+  galeria     GaleriaImagem[]
+
+  @@index([slug])
+  @@index([categoriaId])
+  @@index([ativo])
+  @@index([destaque])
+}
+
+model CategoriaServico {
+  id        String  @id @default(cuid())
+  nome      String
+  slug      String  @unique
+  descricao String? @db.Text
+  icone     String?
+  cor       String? // hex color
+  ordem     Int     @default(0)
+  ativo     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  servicos Servico[]
+
+  @@index([slug])
+}
+
+// Bullets exibidos nos cards de serviço (ServicosPage.tsx → ServiceCard → bullets[])
+model ItemServico {
+  id        String  @id @default(cuid())
+  nome      String
+  descricao String? @db.Text
+  incluido  Boolean @default(true) // se está incluído no serviço base
+  ordem     Int     @default(0)
+
+  servicoId String
+  servico   Servico @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+
+  @@index([servicoId])
+}
+
+// ============================================
+// EVENTOS
+// ============================================
+
+model Evento {
+  id     String     @id @default(cuid())
+  titulo String
+  slug   String     @unique
+  descricao String  @db.Text
+  tipo   TipoEvento
+  status StatusEvento @default(AGENDADO)
+
+  // Data e horário
+  dataInicio DateTime
+  dataFim    DateTime?
+  horaInicio String?  // HH:MM
+  horaFim    String?  // HH:MM
+
+  // Local
+  local    String?
+  endereco String?
+  cidade   String?
+  estado   String?
+
+  // Detalhes
+  numeroConvidados Int?
+  imagem           String?
+  imagemAlt        String?
+  publico          Boolean @default(false) // se aparece no site
+
+  // Cliente
+  nomeCliente     String?
+  emailCliente    String?
+  telefoneCliente String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  galeria     GaleriaImagem[]
+  depoimentos Depoimento[]   // ← back-relation adicionada
+
+  @@index([slug])
+  @@index([tipo])
+  @@index([status])
+  @@index([dataInicio])
+  @@index([publico])
+}
+
+enum TipoEvento {
+  CASAMENTO
+  DEBUTANTE        // ← adicionado: usado em ServicosPage e GaleriaPage
+  ANIVERSARIO
+  CORPORATIVO
+  FORMATURA
+  BATIZADO
+  CONFRATERNIZACAO
+  JANTAR_PRIVATIVO // ← adicionado: mencionado em ContatoPage e HomePage
+  OUTRO
+}
+
+enum StatusEvento {
+  AGENDADO
+  CONFIRMADO
+  EM_ANDAMENTO
+  CONCLUIDO
+  CANCELADO
+}
+
+// ============================================
+// GALERIA
+// Categorias mapeadas do GaleriaPage.tsx:
+//   Eventos | Casamentos | Debutantes | Personal Chef | Corporativo
+// Cada imagem tem colSpan/rowSpan para o grid desktop (4 colunas)
+// ============================================
+
+model GaleriaImagem {
+  id           String  @id @default(cuid())
+  titulo       String?
+  descricao    String? @db.Text
+  url          String
+  thumbnailUrl String?
+  alt          String?
+  largura      Int?
+  altura       Int?
+  ordem        Int     @default(0)
+  destaque     Boolean @default(false)
+  ativo        Boolean @default(true)
+
+  // Grid layout (GaleriaPage.tsx usa CSS grid com colSpan/rowSpan)
+  colSpan Int @default(1) // quantas colunas ocupa no grid 4-col desktop
+  rowSpan Int @default(1) // quantas linhas ocupa
+
+  // Categorização
+  tipo TipoMidia @default(IMAGEM)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  categoriaId String?
+  categoria   CategoriaGaleria? @relation(fields: [categoriaId], references: [id])
+  servicoId   String?
+  servico     Servico?          @relation(fields: [servicoId], references: [id])
+  eventoId    String?
+  evento      Evento?           @relation(fields: [eventoId], references: [id])
+  tags        GaleriaTag[]
+
+  @@index([categoriaId])
+  @@index([servicoId])
+  @@index([eventoId])
+  @@index([ativo])
+  @@index([destaque])
+}
+
+model CategoriaGaleria {
+  id        String  @id @default(cuid())
+  nome      String
+  slug      String  @unique
+  descricao String? @db.Text
+  // Cor de fundo do cell no grid (ex: "#252018", "#1e1b14")
+  cor       String? // ← adicionado: usado em GaleriaPage cells bg color
+  ordem     Int     @default(0)
+  ativo     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  imagens GaleriaImagem[]
+
+  @@index([slug])
+}
+
+enum TipoMidia {
+  IMAGEM
+  VIDEO
+}
+
+// ============================================
+// CONTATOS E ORÇAMENTOS
+// ContatoPage.tsx NÃO tem formulário — usa WhatsApp/Email/Instagram/LinkedIn.
+// Este modelo serve para o painel admin registrar leads e contatos recebidos.
+// ============================================
+
+model Contato {
+  id       String  @id @default(cuid())
+  nome     String
+  email    String
+  telefone String?
+  assunto  String?
+  mensagem String  @db.Text
+
+  // Tipo de evento de interesse (opcional, para triagem)
+  tipoEvento TipoEvento?
+
+  status    StatusContato @default(NOVO)
+  lido      Boolean       @default(false)
+  respondido Boolean      @default(false)
+
+  // Canal de origem (ex: "whatsapp", "email", "instagram", "linkedin")
+  canal    String?
+  // Página de onde veio
+  origem   String?
+  userAgent String?
+  ip        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([lido])
+  @@index([email])
+  @@index([createdAt])
+}
+
+enum StatusContato {
+  NOVO
+  EM_ANDAMENTO
+  RESPONDIDO
+  ARQUIVADO
+}
+
+model Orcamento {
+  id String @id @default(cuid())
+
+  // Dados do cliente
+  nomeCliente     String
+  emailCliente    String
+  telefoneCliente String
+
+  // Detalhes do evento
+  tipoEvento       TipoEvento? // ← tornado opcional: nem sempre informado via WhatsApp
+  dataEvento       DateTime?
+  numeroConvidados Int?
+  local            String?
+  cidade           String?
+
+  // Orçamento
+  observacoes   String?         @db.Text
+  status        StatusOrcamento @default(PENDENTE)
+  valorEstimado Decimal?        @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  servicoId String?
+  servico   Servico? @relation(fields: [servicoId], references: [id])
+
+  @@index([status])
+  @@index([emailCliente])
+  @@index([dataEvento])
+  @@index([createdAt])
+}
+
+enum StatusOrcamento {
+  PENDENTE
+  EM_ANALISE
+  ENVIADO
+  APROVADO
+  RECUSADO
+  EXPIRADO
+}
+
+// ============================================
+// DEPOIMENTOS
+// Não há seção de depoimentos no front atual,
+// mas o modelo está pronto para uso futuro.
+// ============================================
+
+model Depoimento {
+  id         String  @id @default(cuid())
+  nome       String
+  cargo      String?
+  empresa    String?
+  foto       String?
+  depoimento String  @db.Text
+  avaliacao  Int     @default(5) // 1-5 estrelas
+
+  ativo    Boolean @default(false) // requer aprovação
+  destaque Boolean @default(false)
+  ordem    Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Evento relacionado (opcional) — com relação corretamente definida
+  eventoId String?
+  evento   Evento? @relation(fields: [eventoId], references: [id])
+
+  @@index([ativo])
+  @@index([destaque])
+  @@index([avaliacao])
+  @@index([eventoId])
+}
+
+// ============================================
+// BLOG / NOTÍCIAS
+// Não há página de blog no front atual (routes.tsx não inclui /blog).
+// Modelo mantido para implementação futura.
+// ============================================
+
+model BlogPost {
+  id        String  @id @default(cuid())
+  titulo    String
+  slug      String  @unique
+  resumo    String? @db.Text
+  conteudo  String  @db.Text
+  imagemCapa String?
+  imagemAlt  String?
+
+  publicado      Boolean   @default(false)
+  destaque       Boolean   @default(false)
+  dataPublicacao DateTime?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String? @db.Text
+
+  visualizacoes Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  autorId     String?
+  autor       User?         @relation(fields: [autorId], references: [id])
+  categoriaId String?
+  categoria   CategoriaBlog? @relation(fields: [categoriaId], references: [id])
+  tags        BlogPostTag[]
+
+  @@index([slug])
+  @@index([publicado])
+  @@index([destaque])
+  @@index([dataPublicacao])
+}
+
+model CategoriaBlog {
+  id        String  @id @default(cuid())
+  nome      String
+  slug      String  @unique
+  descricao String? @db.Text
+  cor       String?
+  ordem     Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts BlogPost[]
+
+  @@index([slug])
+}
+
+// ============================================
+// SISTEMA DE TAGS
+// ============================================
+
+model Tag {
+  id   String  @id @default(cuid())
+  nome String  @unique
+  slug String  @unique
+  cor  String?
+
+  createdAt DateTime @default(now())
+
+  servicos ServicoTag[]
+  galeria  GaleriaTag[]
+  posts    BlogPostTag[]
+
+  @@index([slug])
+}
+
+model ServicoTag {
+  servicoId String
+  tagId     String
+
+  servico Servico @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([servicoId, tagId])
+  @@index([tagId])
+}
+
+model GaleriaTag {
+  galeriaId String
+  tagId     String
+
+  galeria GaleriaImagem @relation(fields: [galeriaId], references: [id], onDelete: Cascade)
+  tag     Tag           @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([galeriaId, tagId])
+  @@index([tagId])
+}
+
+model BlogPostTag {
+  postId String
+  tagId  String
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([tagId])
+}
+
+// ============================================
+// CONFIGURAÇÕES DO SITE
+// Usado para armazenar dados do chef (ContatoPage):
+//   chef_whatsapp     → 5519981377754
+//   chef_email        → hugo.284356@gmail.com
+//   chef_instagram    → https://www.instagram.com/chefehugoferreira/
+//   chef_linkedin     → https://www.linkedin.com/in/hugoalexandreferreira/
+//   chef_cidade       → Piracicaba – SP
+// ============================================
+
+model Configuracao {
+  id        String     @id @default(cuid())
+  chave     String     @unique
+  valor     String     @db.Text
+  tipo      TipoConfig @default(TEXTO)
+  descricao String?
+  grupo     String?    // para agrupar configs relacionadas
+
+  updatedAt DateTime @updatedAt
+
+  @@index([chave])
+  @@index([grupo])
+}
+
+enum TipoConfig {
+  TEXTO
+  NUMERO
+  BOOLEAN
+  JSON
+  URL
+  EMAIL
+}
+
+// ============================================
+// NEWSLETTER
+// Não há formulário de newsletter no front atual.
+// Modelo mantido para implementação futura.
+// ============================================
+
+model Newsletter {
+  id         String  @id @default(cuid())
+  email      String  @unique
+  nome       String?
+  ativo      Boolean @default(true)
+  confirmado Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([ativo])
+}
