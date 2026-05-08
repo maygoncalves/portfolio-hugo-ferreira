@@ -930,6 +930,19 @@ function FooterSection() {
             <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', margin: 0, letterSpacing: '0.922px' }}>
               © 2026 Hugo Ferreira · Chefe de Cozinha · Piracicaba/SP · Todos os direitos reservados
             </p>
+            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', margin: '8px 0 0', letterSpacing: '0.922px' }}>
+              Desenvolvido por{' '}
+              <a
+                href="https://www.mythikastudio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#C9A84C', textDecoration: 'none', transition: 'opacity 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+              >
+                Mythika Studio
+              </a>
+            </p>
           </div>
         </div>
       </div>

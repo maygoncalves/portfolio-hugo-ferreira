@@ -3,10 +3,10 @@ import { motion, AnimatePresence, useInView } from 'motion/react';
 import { Link } from 'react-router';
 import svgPaths from "../../imports/Servicos/svg-dguawcu1mv";
 import imgBg from "../../imports/Servicos/c7c1f8bc4297271495b65fddb697b9034042325b.png";
-const imgCasamentos = "/images/servicos/casamentos.jpg";
-const imgPersonalChef = "/images/servicos/personal-chef.jpg";
+const imgCasamentos = "/images/servicos/01.jpeg";
+const imgPersonalChef = "/images/servicos/02.jpeg";
 const imgEventos = "/images/servicos/eventos.jpg";
-const imgGestao = "/images/servicos/gestao.jpg";
+const imgGestao = "/images/servicos/04.jpeg";
 
 /* ─── Responsive hook ──────────────────────────────────────────────────── */
 function useIsMobile() {
@@ -325,8 +325,8 @@ function ServiceCard({ tag, title, desc, bullets, img, delay }: CardData) {
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay, ease: 'easeOut' }}
-      className="relative overflow-hidden"
-      style={{ background: '#0f0d0a', minHeight: 480 }}
+      className="relative overflow-hidden h-full min-h-[528px]"
+      style={{ background: '#0f0d0a' }}
       onMouseEnter={() => !isMobile && setHovered(true)}
       onMouseLeave={() => { setHovered(false); setCtaHovered(false); }}
       onTouchStart={() => setHovered(true)}
@@ -357,9 +357,9 @@ function ServiceCard({ tag, title, desc, bullets, img, delay }: CardData) {
         }}
       />
 
-      {/* Category tag — top left */}
+      {/* Category tag — top left (z-index acima do painel de conteúdo) */}
       <div
-        className="absolute left-6 flex items-center px-[13.8px] py-[5.8px]"
+        className="absolute left-6 flex items-center px-[13.8px] py-[5.8px] z-[3]"
         style={{
           top: 24,
           border: `1px solid ${hovered ? 'rgba(201,168,76,0.7)' : 'rgba(201,168,76,0.4)'}`,
@@ -371,10 +371,11 @@ function ServiceCard({ tag, title, desc, bullets, img, delay }: CardData) {
         </span>
       </div>
 
-      {/* Gradient content area — slides up on hover */}
+      {/* Painel de conteúdo: top fixo abaixo da tag + coluna flex para alinhar linha/CTA na base entre cards */}
       <div
-        className="absolute bottom-0 left-0 right-0"
+        className="absolute left-0 right-0 bottom-0 z-[1] flex flex-col"
         style={{
+          top: 88,
           background: 'linear-gradient(to top, rgba(15,13,10,0.97) 0%, rgba(15,13,10,0.92) 60%, rgba(15,13,10,0) 100%)',
           transform: hovered
             ? `translateY(${isMobile ? '-3px' : '-6px'})`
@@ -382,19 +383,37 @@ function ServiceCard({ tag, title, desc, bullets, img, delay }: CardData) {
           transition: 'transform 0.4s ease',
         }}
       >
-        <div className="flex flex-col gap-[12.9px] pb-[29.18px] pt-8 px-8">
-          {/* Title */}
-          <h3 style={{ fontFamily: "'Cormorant Garamond', sans-serif", fontWeight: 500, fontSize: 24, color: '#faf7f2', lineHeight: '29.44px', margin: 0 }}>
+        <div className="flex min-h-0 flex-1 flex-col gap-[12.9px] px-8 pb-[29.18px] pt-8">
+          {/* Title — mesma caixa vertical em todos os cards */}
+          <h3
+            className="shrink-0"
+            style={{
+              fontFamily: "'Cormorant Garamond', sans-serif",
+              fontWeight: 500,
+              fontSize: 24,
+              color: '#faf7f2',
+              lineHeight: '29.44px',
+              margin: 0,
+              minHeight: '58.88px',
+              display: 'flex',
+              alignItems: 'flex-start',
+            }}
+          >
             {title}
           </h3>
 
           {/* Description */}
-          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 14, color: '#b0a89a', lineHeight: '23.62px', margin: 0 }}>
+          <p
+            style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 14, color: '#b0a89a', lineHeight: '23.62px', margin: 0, paddingBottom: 16 }}
+          >
             {desc}
           </p>
 
           {/* Bullets */}
-          <div style={{ borderTop: '1px solid rgba(201,168,76,0.2)', paddingTop: 21.69 }}>
+          <div
+            className="shrink-0"
+            style={{ borderTop: '1px solid rgba(201,168,76,0.2)', paddingTop: 21.69, marginTop: 16 }}
+          >
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {bullets.map((b, i) => (
                 <li key={i} style={{ display: 'flex', alignItems: 'flex-start', minHeight: 23.09, gap: 0 }}>
@@ -406,7 +425,7 @@ function ServiceCard({ tag, title, desc, bullets, img, delay }: CardData) {
           </div>
 
           {/* CTA link */}
-          <div style={{ paddingTop: 13.2, paddingBottom: 2.28 }}>
+          <div className="shrink-0" style={{ paddingTop: 13.2, paddingBottom: 2.28 }}>
             <a
               href="/#contato"
               className="inline-flex items-center gap-[6.39px]"
@@ -811,6 +830,19 @@ function FooterSection() {
           <div style={{ borderTop: '1px solid #2e2922', paddingTop: 32 }}>
             <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px' }}>
               © 2026 Hugo Ferreira · Chefe de Cozinha · Piracicaba/SP · Todos os direitos reservados
+            </div>
+            <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px', marginTop: 8 }}>
+              Desenvolvido por{' '}
+              <a
+                href="https://www.mythikastudio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#C9A84C', textDecoration: 'none', transition: 'opacity 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+              >
+                Mythika Studio
+              </a>
             </div>
           </div>
         </div>

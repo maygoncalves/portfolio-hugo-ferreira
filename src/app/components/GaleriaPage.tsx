@@ -995,6 +995,19 @@ function FooterSection() {
             <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11px', color: '#7a6f62', textAlign: 'center', margin: 0 }}>
               © {new Date().getFullYear()} Hugo Ferreira · Chefe de Cozinha. Piracicaba, São Paulo.
             </p>
+            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11px', color: '#7a6f62', textAlign: 'center', margin: '8px 0 0' }}>
+              Desenvolvido por{' '}
+              <a
+                href="https://www.mythikastudio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#C9A84C', textDecoration: 'none', transition: 'opacity 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+              >
+                Mythika Studio
+              </a>
+            </p>
           </div>
         </div>
       </div>

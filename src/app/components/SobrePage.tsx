@@ -377,13 +377,13 @@ function HistoriaSection() {
                   animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
                   transition={{ duration: 0.9, ease: 'easeOut' }}
                   className="relative overflow-hidden"
-                  style={{ height: isMobile ? 'auto' : 800, aspectRatio: isMobile ? '3/4' : undefined }}
+                  style={{ height: isMobile ? 'auto' : 800, aspectRatio: isMobile ? '4/3' : undefined }}
                 >
                   <img
                     alt="Hugo Ferreira — Chefe de Cozinha"
                     src={imgHugoPerfil}
                     className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center top' }}
+                    style={isMobile ? { objectPosition: '50% 10%' } : undefined}
                   />
                   {/* Badge "20+ Anos" */}
                   <motion.div
@@ -1013,6 +1013,19 @@ function FooterSection() {
           <div style={{ borderTop: '1px solid #2e2922', paddingTop: 32 }}>
             <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px' }}>
               © 2026 Hugo Ferreira · Chefe de Cozinha · Piracicaba/SP · Todos os direitos reservados
+            </div>
+            <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px', marginTop: 8 }}>
+              Desenvolvido por{' '}
+              <a
+                href="https://www.mythikastudio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#C9A84C', textDecoration: 'none', transition: 'opacity 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+              >
+                Mythika Studio
+              </a>
             </div>
           </div>
         </div>

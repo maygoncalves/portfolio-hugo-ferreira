@@ -116,7 +116,9 @@ function NavBar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v:
 
         {/* Desktop CTA */}
         <a
-          href="#contato"
+          href="https://wa.me/5519981377754?text=Ol%C3%A1%2C+Hugo%21+Vi+seu+portf%C3%B3lio+e+gostaria+de+solicitar+uma+proposta+para+meu+evento."
+          target="_blank"
+          rel="noopener noreferrer"
           className="hidden lg:flex items-center rounded-[2px] px-[22.4px] py-[8.5px]"
           style={{ background: '#c9a84c', fontFamily: "'Jost', sans-serif", fontWeight: 500, fontSize: '14px', color: '#1a1612', letterSpacing: '1.382px', textTransform: 'uppercase', textDecoration: 'none', transition: 'transform 0.25s ease, filter 0.25s ease' }}
           onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.filter = 'brightness(1.06)'; }}
@@ -214,7 +216,9 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: links.length * 0.07 + 0.25 }}
-              href="#contato"
+              href="https://wa.me/5519981377754?text=Ol%C3%A1%2C+Hugo%21+Vi+seu+portf%C3%B3lio+e+gostaria+de+solicitar+uma+proposta+para+meu+evento."
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={onClose}
               className="mt-4 px-8 py-3 rounded-[2px]"
               style={{ background: '#c9a84c', fontFamily: "'Jost', sans-serif", fontWeight: 500, fontSize: '14px', color: '#1a1612', letterSpacing: '1.382px', textTransform: 'uppercase', textDecoration: 'none', minHeight: 44, display: 'flex', alignItems: 'center' }}
@@ -320,7 +324,7 @@ function HeroSection() {
       <section className="md:hidden relative flex flex-col justify-center" style={{ minHeight: '100svh' }}>
         <div className="absolute inset-0 overflow-hidden">
           <img alt="" src={imgHeroBg} className="absolute inset-0 size-full object-cover" />
-          <div className="absolute inset-0" style={{ background: 'rgba(15,13,10,0.62)' }} />
+          <div className="absolute inset-0" style={{ background: 'rgba(15,13,10,0.72)' }} />
         </div>
 
         <div className="relative z-10 flex flex-col px-6 pb-10" style={{ paddingTop: 'max(88px, 18svh)' }}>
@@ -363,7 +367,9 @@ function HeroSection() {
 function HeroPrimaryBtn({ mobile }: { mobile?: boolean }) {
   return (
     <a
-      href="#contato"
+      href="https://wa.me/5519981377754?text=Ol%C3%A1%2C+Hugo%21+Vi+seu+portf%C3%B3lio+e+gostaria+de+solicitar+uma+proposta+para+meu+evento."
+      target="_blank"
+      rel="noopener noreferrer"
       className={`flex items-center justify-center gap-2 rounded-[2px] ${mobile ? 'py-[14px] w-full' : 'px-[28.8px] py-[13px]'}`}
       style={{ background: '#c9a84c', fontFamily: "'Jost', sans-serif", fontWeight: 500, fontSize: '12.8px', color: '#1a1612', letterSpacing: '1.28px', textTransform: 'uppercase', textDecoration: 'none', minHeight: 44, transition: 'transform 0.25s ease' }}
       onMouseEnter={e => !mobile && (e.currentTarget.style.transform = 'translateY(-2px)')}
@@ -379,7 +385,7 @@ function HeroPrimaryBtn({ mobile }: { mobile?: boolean }) {
 function HeroSecondaryBtn({ mobile }: { mobile?: boolean }) {
   return (
     <Link
-      to="/servicos"
+      to="/galeria"
       className={`flex items-center justify-center gap-2 rounded-[2px] ${mobile ? 'py-[14px] w-full' : 'px-[29.8px] py-[14px]'}`}
       style={{ border: '1px solid #c9a84c', fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '12.8px', color: '#c9a84c', letterSpacing: '1.28px', textTransform: 'uppercase', textDecoration: 'none', minHeight: 44, transition: 'transform 0.25s ease, background 0.25s ease' }}
       onMouseEnter={e => { if (!mobile) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; } }}
@@ -411,8 +417,8 @@ function AboutSection() {
               className="relative self-center"
             >
               <div className="relative pl-6 pt-6">
-                <div className="overflow-hidden md:h-[520px] max-md:aspect-[4/3] max-md:w-full">
-                  <img alt="Hugo Ferreira — Chefe de Cozinha" src={imgPerfilHome} className="w-full h-full object-cover" />
+                <div className="overflow-hidden md:h-[520px] max-md:aspect-[3/4] max-md:min-h-[480px] max-md:w-full">
+                  <img alt="Hugo Ferreira — Chefe de Cozinha" src={imgPerfilHome} className="block w-full h-full" style={{ objectFit: 'cover', objectPosition: '50% 0%' }} />
                 </div>
                 <div className="absolute inset-0 border border-[#c9a84c] border-solid pointer-events-none" />
               </div>
@@ -429,10 +435,9 @@ function AboutSection() {
                 Quem sou eu
               </div>
               <div style={{ fontFamily: "'Cormorant Garamond', sans-serif", fontStyle: 'italic', fontWeight: 400, fontSize: 24, color: '#faf7f2', lineHeight: '35.64px' }}>
-                <p style={{ margin: 0 }}>Sou o Hugo Ferreira — chefe de cozinha com mais de 20 anos de</p>
-                <p style={{ margin: 0 }}>experiência em eventos, restaurantes e cozinhas de alto padrão.</p>
-                <p style={{ margin: 0 }}>Cada prato que preparo carrega um propósito: fazer você e seus</p>
-                <p style={{ margin: 0 }}>convidados viverem algo que vai além da comida.</p>
+                <p style={{ margin: 0, maxWidth: '42ch' }}>
+                  Sou o Hugo Ferreira — chefe de cozinha com mais de 20 anos de experiência em eventos, restaurantes e cozinhas de alto padrão. Cada prato que preparo carrega um propósito: fazer você e seus convidados viverem algo que vai além da comida.
+                </p>
               </div>
               <SaibaMaisLink />
             </motion.div>
@@ -744,9 +749,9 @@ function CTASection() {
       <div ref={ref} className="flex flex-col items-center justify-center px-[72px] py-[144px] max-md:px-6 max-md:py-16">
         <div className="flex flex-col items-center gap-6 w-full" style={{ maxWidth: 900 }}>
           {/* Headline */}
-          <div className="text-center" style={{ fontFamily: "'Cormorant Garamond', sans-serif", fontWeight: 300, textTransform: 'uppercase', color: '#1a1612', lineHeight: '0.95', fontSize: 'clamp(2rem, 9vw, 4.5rem)' }}>
+          <div className="text-center" style={{ fontFamily: "'Cormorant Garamond', sans-serif", fontWeight: 300, textTransform: 'uppercase', color: '#1A1612', lineHeight: '0.95', fontSize: 'clamp(2rem, 9vw, 4.5rem)' }}>
             {['SEU EVENTO', 'MERECE O MELHOR.', 'VAMOS CONVERSAR.'].map((line, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: i * 0.1, ease: 'easeOut' }}>
+              <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: i * 0.1, ease: 'easeOut' }} style={{ color: '#1A1612' }}>
                 {line}
               </motion.div>
             ))}
@@ -756,7 +761,7 @@ function CTASection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
             className="text-center"
-            style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '0.88rem', color: '#2e2922', lineHeight: '25px', maxWidth: 520 }}
+            style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '0.88rem', color: '#1A1612', lineHeight: '25px', maxWidth: 520 }}
           >
             <p style={{ margin: 0 }}>Estou disponível para casamentos, debutantes, eventos corporativos e jantares privativos.</p>
             <p style={{ margin: 0 }}>Entre em contato e vamos criar juntos.</p>
@@ -768,7 +773,9 @@ function CTASection() {
             className="flex flex-wrap justify-center gap-4 w-full max-md:flex-col"
           >
             <a
-              href="mailto:hugo.284356@gmail.com"
+              href="https://wa.me/5519981377754?text=Ol%C3%A1%2C+Hugo%21+Vi+seu+portf%C3%B3lio+e+gostaria+de+solicitar+uma+proposta+para+meu+evento."
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 rounded-[2px] px-8 py-[14px] max-md:w-full"
               style={{ background: '#1a1612', fontFamily: "'Jost', sans-serif", fontWeight: 500, fontSize: '12.8px', color: '#c9a84c', letterSpacing: '1.28px', textTransform: 'uppercase', textDecoration: 'none', minHeight: 44, transition: 'transform 0.25s ease, filter 0.25s ease' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.filter = 'brightness(1.06)'; }}
@@ -936,6 +943,19 @@ function FooterSection() {
           <div style={{ borderTop: '1px solid #2e2922', paddingTop: 32 }}>
             <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px' }}>
               © 2026 Hugo Ferreira · Chefe de Cozinha · Piracicaba/SP · Todos os direitos reservados
+            </div>
+            <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: '11.5px', color: '#666', textAlign: 'center', letterSpacing: '0.922px', marginTop: 8 }}>
+              Desenvolvido por{' '}
+              <a
+                href="https://www.mythikastudio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#C9A84C', textDecoration: 'none', transition: 'opacity 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+              >
+                Mythika Studio
+              </a>
             </div>
           </div>
         </div>
